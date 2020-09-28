@@ -1,10 +1,11 @@
 plugins {
     id 'java'
     id 'maven'
+    id 'maven-publish'
 }
 
-group 'org.example'
-version '1.2-SNAPSHOT'
+group 'com.qxkj.util'
+version '1.0.1'
 
 repositories {
     mavenLocal()
@@ -16,13 +17,37 @@ repositories {
     mavenCentral()
 }
 
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        myPublication(MavenPublication) {
+            from components.java
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "http://192.168.3.112:8089/nexus/content/repositories/qxkj/"
+            credentials {
+                username = 'admin'
+                password = 'admin123'
+            }
+        }
+    }
+}
+
 dependencies {
 
     compile 'com.qianxun:qxkjsecurityutils-spring-boot-start:1.0.3'
-    implementation 'org.apache.dubbo:dubbo:2.7.7'
-    compile 'com.squareup:javapoet:1.13.0'
+    compile 'org.apache.dubbo:dubbo:2.7.7'
+    implementation 'com.squareup:javapoet:1.13.0'
     annotationProcessor 'com.google.auto.service:auto-service:+'
-    compile 'com.google.auto.service:auto-service:+'
+    implementation 'com.google.auto.service:auto-service:+'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
