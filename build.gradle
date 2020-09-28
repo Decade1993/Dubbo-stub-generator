@@ -8,11 +8,18 @@ version '1.2-SNAPSHOT'
 
 repositories {
     mavenLocal()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+    maven{ url 'https://repo.spring.io/libs-milestone' }
+    maven{ url "http://192.168.3.112:8089/nexus/content/repositories/qxkj/"}
+    maven { url 'http://www.ziniuxiaozhu.com:8081/nexus/content/repositories/com/' }
     mavenCentral()
 }
 
 dependencies {
 
+    compile 'com.qianxun:qxkjsecurityutils-spring-boot-start:1.0.3'
+    implementation 'org.apache.dubbo:dubbo:2.7.7'
     compile 'com.squareup:javapoet:1.13.0'
     annotationProcessor 'com.google.auto.service:auto-service:+'
     compile 'com.google.auto.service:auto-service:+'

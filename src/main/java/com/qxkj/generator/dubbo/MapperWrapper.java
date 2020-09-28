@@ -1,5 +1,6 @@
 package com.qxkj.generator.dubbo;
 
+import com.qianxun.util.CurrentUserUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -7,6 +8,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import org.apache.dubbo.rpc.RpcContext;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Element;
@@ -103,6 +105,7 @@ public class MapperWrapper {
                         .addAnnotation(ClassName.get("java.lang", "Override"))
                         .addModifiers(Modifier.PUBLIC)
                         .addParameters(parameterSpecList)
+                        .addStatement("$T.getContext().setObjectAttachment(\"user\", $T.getUserDetails())", RpcContext.class, CurrentUserUtil.class)
                         .addStatement(returnPre + "this.$N.$N($N)", PROXY_NAME,
                                 method.getSimpleName().toString(),
                                 params)
