@@ -10,8 +10,8 @@
 1. modify the build.gradle file
 
 ```
-compileOnly('org.example:generator:{version}')
-annotationProcessor('org.example:generator:{version}')
+compileOnly('com.qxkj.util:generator:{version}')
+annotationProcessor('com.qxkj.util:generator:{version}')
 ```
 
 2. add @DubboStub on the interface of DubboService like this:
