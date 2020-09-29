@@ -1,8 +1,8 @@
-# Dubbo-stub-generator
+# code generator
 
 ## Feature
 
-
+Generate code when java compile
 
 
 ## Usage
