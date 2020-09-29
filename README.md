@@ -2,9 +2,7 @@
 
 ## Feature
 
-Generate code when java compile
-
-1. support Spring Security with Dubbo using the annotation @DubboStub
+**1. support Spring Security with Dubbo using the annotation @DubboStub**
 
 
 ## Usage
