@@ -1,6 +1,6 @@
 package com.qxkj.generator.mvc.controller;
 
-import com.qxkj.document.controller.vo.JsonResult;
+
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -38,7 +38,7 @@ public class ControllerWrapperList extends ArrayList<ControllerWrapper> {
               .addModifiers(Modifier.PUBLIC)
               .addParameters(wrapper.getParams())
               .addStatement(wrapper.getMethodStatement())
-              .returns(JsonResult.class)
+              .returns(ArrayList.class)
               .build();
       classBuilder.addMethod(build);
     }
