@@ -1,6 +1,5 @@
 package com.qxkj.generator.mvc.controller;
 
-import com.google.common.base.CaseFormat;
 import com.qxkj.generator.mvc.ResponseBean;
 import com.qxkj.generator.mvc.ResponseUtil;
 import com.squareup.javapoet.AnnotationSpec;
@@ -16,8 +15,18 @@ import javax.lang.model.type.MirroredTypeException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Copyright  2020年 generator. All rights reserved.
+ * <p>
+ * 为了共建和谐社会，请为该类写点注释吧...
+ * <p>
+ * version 1.0.0
+ *
+ * @author decade
+ * @date 2020/11/9 4:01 下午
+ */
+public class ControllerFindByIdMethodWrapper implements MethodWrapper {
 
-public class ControllerMethodWrapper implements MethodWrapper {
 
   private TypeElement annotatedElement;
 
@@ -61,7 +70,7 @@ public class ControllerMethodWrapper implements MethodWrapper {
   private String serviceFieldName;
 
 
-  ControllerMethodWrapper(TypeElement annotatedElement) {
+  ControllerFindByIdMethodWrapper(TypeElement annotatedElement) {
     this.annotatedElement = annotatedElement;
     this.qualifiedName = annotatedElement.getQualifiedName().toString();
     int index = qualifiedName.lastIndexOf(".");
@@ -145,12 +154,14 @@ public class ControllerMethodWrapper implements MethodWrapper {
     return "$T data = ".concat(invoke);
   }
 
-  private ParameterSpec getParam() {
-    return ParameterSpec.builder(TypeName.get(annotatedElement.asType()), getParamName()).build();
+  private ParameterSpec.Builder getParam() {
+    ParameterSpec.Builder builder;
+    builder = ParameterSpec.builder(String.class, getParamName());
+    return builder;
   }
 
   private String getParamName() {
-    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, annotatedElement.getSimpleName().toString());
+    return "id";
   }
 
   private AnnotationSpec getRequestMapping() {
@@ -164,47 +175,25 @@ public class ControllerMethodWrapper implements MethodWrapper {
     MethodSpec must = MethodSpec.methodBuilder(getServiceName())
             .addAnnotation(getRequestMapping())
             .addModifiers(Modifier.PUBLIC)
-            .addParameter(getParam())
+            .addParameter(getParam().addAnnotation(PathVariable.class).build())
             .addStatement(getMethodStatement(), getReturnType())
             .addStatement("return $T.responseSuccess(data)", ResponseUtil.class)
             .returns(ResponseBean.class)
             .build();
     ArrayList<MethodSpec> ret = new ArrayList<>();
     ret.add(must);
-    if (method.equals(MvcController.Method.CREATE)) {
-      MethodSpec delete = MethodSpec.methodBuilder(MvcController.Method.DELETE.serviceName)
-              .addAnnotation(AnnotationSpec.builder(MvcController.Method.DELETE.requestMapping)
-                      .addMember("value", "$S", MvcController.Method.DELETE.url)
-                      .build())
-              .addModifiers(Modifier.PUBLIC)
-              .addParameter(ParameterSpec.builder(String.class, "id").addAnnotation(PathVariable.class).build())
-              .addStatement(serviceFieldName.concat(".").concat(MvcController.Method.DELETE.serviceName).concat("(id)"))
-              .addStatement("return $T.responseSuccess()", ResponseUtil.class)
-              .returns(ResponseBean.class)
-              .build();
-      ret.add(delete);
-    }
     return ret;
   }
 
   @Override
   public List<MethodSpec> getInterfaceMethodSpecs() {
     MethodSpec must = MethodSpec.methodBuilder(getServiceName())
-            .addParameter(getParam())
+            .addParameter(getParam().build())
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
             .returns(getReturnType())
             .build();
     ArrayList<MethodSpec> ret = new ArrayList<>();
     ret.add(must);
-    if (method.equals(MvcController.Method.CREATE)) {
-      MethodSpec delete = MethodSpec.methodBuilder(MvcController.Method.DELETE.serviceName)
-              .addParameter(ParameterSpec.builder(String.class, "id").build())
-              .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-              .build();
-      ret.add(delete);
-    }
     return ret;
   }
-
-
 }

@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * @author decade
  * @date 2020/11/6 4:15 下午
  */
-public class ControllerWrapper extends ArrayList<ControllerMethodWrapper> {
+public class ControllerWrapper extends ArrayList<MethodWrapper> {
 
   private String domain;
 
@@ -59,8 +59,8 @@ public class ControllerWrapper extends ArrayList<ControllerMethodWrapper> {
     // 创建Service 接口类
     TypeSpec.Builder interfaceBuilder = TypeSpec.interfaceBuilder(this.interfaceName)
             .addModifiers(Modifier.PUBLIC);
-    for (ControllerMethodWrapper wrapper : this) {
-      interfaceBuilder.addMethod(wrapper.getInterfaceMethodSpec());
+    for (MethodWrapper wrapper : this) {
+      interfaceBuilder.addMethods(wrapper.getInterfaceMethodSpecs());
     }
     TypeSpec interfaceFile = interfaceBuilder.build();
     JavaFile.builder(packName, interfaceFile).build().writeTo(filer);
@@ -76,8 +76,8 @@ public class ControllerWrapper extends ArrayList<ControllerMethodWrapper> {
                     .addAnnotation(Autowired.class).build());
 
     // 创建 requestMapping 方法
-    for (ControllerMethodWrapper wrapper : this) {
-      classBuilder.addMethod(wrapper.getControllerMethodSpec());
+    for (MethodWrapper wrapper : this) {
+      classBuilder.addMethods(wrapper.getControllerMethodSpecs());
     }
     TypeSpec classFile = classBuilder.build();
     JavaFile.builder(packName, classFile).build().writeTo(filer);

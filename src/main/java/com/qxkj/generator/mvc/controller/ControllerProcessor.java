@@ -67,10 +67,9 @@ public class ControllerProcessor extends AbstractProcessor {
   public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
     try {
-
       Map<String, ControllerWrapper> wrappers = new HashMap<>();
-
       Set<? extends Element> mappers = roundEnvironment.getElementsAnnotatedWith(MvcController.class);
+
       if (mappers != null && mappers.size() > 0) {
         for (Element mapper : mappers) {
           if (mapper.getKind() != ElementKind.CLASS) {
@@ -92,7 +91,7 @@ public class ControllerProcessor extends AbstractProcessor {
             controllerWrapper = new ControllerWrapper(domain);
             wrappers.put(domain, controllerWrapper);
           }
-          controllerWrapper.add(new ControllerMethodWrapper((TypeElement) mapper));
+          controllerWrapper.add(MethodWrapperFactory.create(annotation, (TypeElement) mapper));
         }
       }
       for (ControllerWrapper controller : wrappers.values()) {
