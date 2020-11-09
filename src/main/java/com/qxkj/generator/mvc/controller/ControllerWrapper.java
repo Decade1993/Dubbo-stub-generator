@@ -95,8 +95,8 @@ public class ControllerWrapper extends ArrayList<ControllerMethodWrapper> {
     this.packName = domain.substring(0, index);
     this.domainSimpleName = domain.substring(index + 1);
     this.url = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, domainSimpleName);
-    this.className = domainSimpleName.concat("AIController");
-    this.interfaceName = domainSimpleName.concat("Service");
+    this.className = domainSimpleName.concat("Controller_");
+    this.interfaceName = domainSimpleName.concat("Service_");
     this.serviceFieldName = "service";
     this.serviceClassSimpleName = domain.concat("Service");
   }
