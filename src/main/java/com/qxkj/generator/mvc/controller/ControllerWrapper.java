@@ -48,12 +48,6 @@ public class ControllerWrapper extends ArrayList<ControllerMethodWrapper> {
   private String interfaceName;
 
   /**
-   * Service抽象接口类的simpleName
-   * 比如：OrderService
-   */
-  private String serviceClassSimpleName;
-
-  /**
    * serviceClassSimpleName的字段名
    * 比如：orderService
    */
@@ -77,7 +71,7 @@ public class ControllerWrapper extends ArrayList<ControllerMethodWrapper> {
             .addAnnotation(RestController.class)
             .addAnnotation(AnnotationSpec.builder(RequestMapping.class).addMember("value", "$S", url).build())
             .addModifiers(Modifier.PUBLIC)
-            .addField(FieldSpec.builder(ClassName.get(packName, serviceClassSimpleName),
+            .addField(FieldSpec.builder(ClassName.get(packName, interfaceName),
                     serviceFieldName, Modifier.PRIVATE)
                     .addAnnotation(Autowired.class).build());
 
@@ -98,7 +92,6 @@ public class ControllerWrapper extends ArrayList<ControllerMethodWrapper> {
     this.className = domainSimpleName.concat("Controller_");
     this.interfaceName = domainSimpleName.concat("Service_");
     this.serviceFieldName = "service";
-    this.serviceClassSimpleName = domain.concat("Service");
   }
 
 }
