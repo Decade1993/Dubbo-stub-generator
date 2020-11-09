@@ -50,7 +50,7 @@ dependencies {
     annotationProcessor 'com.google.auto.service:auto-service:+'
     implementation 'com.google.auto.service:auto-service:+'
 
-//    implementation 'com.qxkj:supply-document:1.0.18'
+    implementation("com.google.guava:guava:30.0-jre")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

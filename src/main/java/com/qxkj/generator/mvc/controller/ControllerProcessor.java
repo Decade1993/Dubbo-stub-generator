@@ -65,7 +65,7 @@ public class ControllerProcessor extends AbstractProcessor {
 
     try {
 
-      Map<Class, ControllerWrapperList> wrappers = new HashMap<>();
+      Map<String, ControllerWrapper> wrappers = new HashMap<>();
 
       Set<? extends Element> mappers = roundEnvironment.getElementsAnnotatedWith(MvcController.class);
       if (mappers != null && mappers.size() > 0) {
@@ -75,16 +75,17 @@ public class ControllerProcessor extends AbstractProcessor {
                     MvcController.class.getCanonicalName());
             return true;
           }
-          Class controllerClass = mapper.getAnnotation(MvcController.class).controllerClass();
-          ControllerWrapperList list = wrappers.get(controllerClass);
-          if (list == null) {
-            list = new ControllerWrapperList(controllerClass);
-            wrappers.put(controllerClass, list);
+          MvcController annotation = mapper.getAnnotation(MvcController.class);
+          String domain = annotation.domain();
+          ControllerWrapper controllerWrapper = wrappers.get(domain);
+          if (controllerWrapper == null) {
+            controllerWrapper = new ControllerWrapper(domain);
+            wrappers.put(domain, controllerWrapper);
           }
-          list.add(new ControllerWrapper((TypeElement) mapper));
+          controllerWrapper.add(new ControllerMethodWrapper((TypeElement) mapper));
         }
       }
-      for (ControllerWrapperList wrapperList : wrappers.values()) {
+      for (ControllerWrapper wrapperList : wrappers.values()) {
         wrapperList.generateCode(elementUtils, filer);
       }
     } catch (Exception e) {
