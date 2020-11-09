@@ -82,8 +82,7 @@ public class ControllerMethodWrapper {
       this.qualifiedDomain = annotation.domain().getName();
     } catch (MirroredTypeException e) {
       DeclaredType classTypeMirror = (DeclaredType) e.getTypeMirror();
-//      this.qualifiedDomain = classTypeMirror.toString();
-      this.qualifiedDomain = "com.qxkj.sale.rpc.vo.BoundGoods";
+      this.qualifiedDomain = classTypeMirror.toString();
       this.domain = qualifiedDomain.substring(qualifiedDomain.lastIndexOf(".") + 1);
       this.serviceClassSimpleName = domain.concat("Service");
     }

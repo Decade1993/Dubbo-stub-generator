@@ -6,6 +6,7 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -32,7 +33,7 @@ import java.util.Set;
  * @author decade
  * @date 2020/9/28 11:06 上午
  */
-@AutoService(javax.annotation.processing.Processor.class)
+@AutoService(Processor.class)
 public class ControllerProcessor extends AbstractProcessor {
 
   private Types typeUtils;
@@ -84,8 +85,7 @@ public class ControllerProcessor extends AbstractProcessor {
           }
           catch (MirroredTypeException e) {
             DeclaredType classTypeMirror = (DeclaredType) e.getTypeMirror();
-//            domain = classTypeMirror.toString();
-            domain = "com.qxkj.sale.rpc.vo.BoundGoods";
+            domain = classTypeMirror.toString();
           }
           ControllerWrapper controllerWrapper = wrappers.get(domain);
           if (controllerWrapper == null) {
