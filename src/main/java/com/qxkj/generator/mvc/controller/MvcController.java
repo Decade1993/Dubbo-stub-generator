@@ -22,7 +22,7 @@ public @interface MvcController {
    * 每一个controller唯一
    * @return
    */
-  String domain();
+  Class<?> domain();
 
   Class<?> returnClass() default Void.class;
 

@@ -11,6 +11,8 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
@@ -76,7 +78,15 @@ public class ControllerProcessor extends AbstractProcessor {
             return true;
           }
           MvcController annotation = mapper.getAnnotation(MvcController.class);
-          String domain = annotation.domain();
+          String domain = null;
+          try {
+            domain = annotation.domain().getName();
+          }
+          catch (MirroredTypeException e) {
+            DeclaredType classTypeMirror = (DeclaredType) e.getTypeMirror();
+//            domain = classTypeMirror.toString();
+            domain = "com.qxkj.sale.rpc.vo.BoundGoods";
+          }
           ControllerWrapper controllerWrapper = wrappers.get(domain);
           if (controllerWrapper == null) {
             controllerWrapper = new ControllerWrapper(domain);
@@ -85,8 +95,8 @@ public class ControllerProcessor extends AbstractProcessor {
           controllerWrapper.add(new ControllerMethodWrapper((TypeElement) mapper));
         }
       }
-      for (ControllerWrapper wrapperList : wrappers.values()) {
-        wrapperList.generateCode(elementUtils, filer);
+      for (ControllerWrapper controller : wrappers.values()) {
+        controller.generateCode(elementUtils, filer);
       }
     } catch (Exception e) {
       error(null, e.getMessage());

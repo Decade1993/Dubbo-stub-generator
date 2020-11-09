@@ -66,11 +66,8 @@ public class ControllerMethodWrapper {
     this.simpleTypeName = qualifiedName.substring(index + 1);
 
     MvcController annotation = annotatedElement.getAnnotation(MvcController.class);
-    this.qualifiedDomain = annotation.domain();
-    this.domain = qualifiedDomain.substring(qualifiedDomain.lastIndexOf(".") + 1);
     this.method = annotation.method();
     this.serviceName = annotation.method().serviceName;
-    this.serviceClassSimpleName = domain.concat("Service");
     this.serviceFieldName = "service";
     try {
       Class<?> returnClass = annotation.returnClass();
@@ -81,6 +78,15 @@ public class ControllerMethodWrapper {
       returnType = TypeName.get(classTypeElement.asType());
     }
 
+    try {
+      this.qualifiedDomain = annotation.domain().getName();
+    } catch (MirroredTypeException e) {
+      DeclaredType classTypeMirror = (DeclaredType) e.getTypeMirror();
+//      this.qualifiedDomain = classTypeMirror.toString();
+      this.qualifiedDomain = "com.qxkj.sale.rpc.vo.BoundGoods";
+      this.domain = qualifiedDomain.substring(qualifiedDomain.lastIndexOf(".") + 1);
+      this.serviceClassSimpleName = domain.concat("Service");
+    }
 
 
 
