@@ -63,7 +63,8 @@ public class ControllerWrapper extends ArrayList<ControllerMethodWrapper> {
   void generateCode(Elements elementUtils, Filer filer) throws IOException {
 
     // 创建Service 接口类
-    TypeSpec.Builder interfaceBuilder = TypeSpec.interfaceBuilder(this.interfaceName);
+    TypeSpec.Builder interfaceBuilder = TypeSpec.interfaceBuilder(this.interfaceName)
+            .addModifiers(Modifier.PUBLIC);
     for (ControllerMethodWrapper wrapper : this) {
       interfaceBuilder.addMethod(wrapper.getInterfaceMethodSpec());
     }
