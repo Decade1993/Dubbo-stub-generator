@@ -1,13 +1,15 @@
 package com.qxkj.generator.mvc.controller;
 
 import com.google.common.base.CaseFormat;
+import com.qxkj.generator.mvc.Page;
 import com.qxkj.generator.mvc.ResponseBean;
 import com.qxkj.generator.mvc.ResponseUtil;
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -16,8 +18,17 @@ import javax.lang.model.type.MirroredTypeException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class ControllerMethodWrapper implements MethodWrapper {
+/**
+ * Copyright  2020年 generator. All rights reserved.
+ * <p>
+ * 为了共建和谐社会，请为该类写点注释吧...
+ * <p>
+ * version 1.0.0
+ *
+ * @author decade
+ * @date 2020/11/9 5:21 下午
+ */
+public class ControllerPageMethodWrapper implements MethodWrapper {
 
   private TypeElement annotatedElement;
 
@@ -61,7 +72,7 @@ public class ControllerMethodWrapper implements MethodWrapper {
   private String serviceFieldName;
 
 
-  ControllerMethodWrapper(TypeElement annotatedElement) {
+  ControllerPageMethodWrapper(TypeElement annotatedElement) {
     this.annotatedElement = annotatedElement;
     this.qualifiedName = annotatedElement.getQualifiedName().toString();
     int index = qualifiedName.lastIndexOf(".");
@@ -165,25 +176,12 @@ public class ControllerMethodWrapper implements MethodWrapper {
             .addAnnotation(getRequestMapping())
             .addModifiers(Modifier.PUBLIC)
             .addParameter(getParam())
-            .addStatement(getMethodStatement(), getReturnType())
+            .addStatement(getMethodStatement(), ParameterizedTypeName.get(ClassName.get(Page.class), returnType))
             .addStatement("return $T.responseSuccess(data)", ResponseUtil.class)
             .returns(ResponseBean.class)
             .build();
     ArrayList<MethodSpec> ret = new ArrayList<>();
     ret.add(must);
-    if (method.equals(MvcController.Method.CREATE)) {
-      MethodSpec delete = MethodSpec.methodBuilder(MvcController.Method.DELETE.serviceName)
-              .addAnnotation(AnnotationSpec.builder(MvcController.Method.DELETE.requestMapping)
-                      .addMember("value", "$S", MvcController.Method.DELETE.url)
-                      .build())
-              .addModifiers(Modifier.PUBLIC)
-              .addParameter(ParameterSpec.builder(String.class, "id").addAnnotation(PathVariable.class).build())
-              .addStatement(serviceFieldName.concat(".").concat(MvcController.Method.DELETE.serviceName).concat("(id)"))
-              .addStatement("return $T.responseSuccess()", ResponseUtil.class)
-              .returns(ResponseBean.class)
-              .build();
-      ret.add(delete);
-    }
     return ret;
   }
 
@@ -192,19 +190,10 @@ public class ControllerMethodWrapper implements MethodWrapper {
     MethodSpec must = MethodSpec.methodBuilder(getServiceName())
             .addParameter(getParam())
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-            .returns(getReturnType())
+            .returns(ParameterizedTypeName.get(ClassName.get(Page.class), returnType))
             .build();
     ArrayList<MethodSpec> ret = new ArrayList<>();
     ret.add(must);
-    if (method.equals(MvcController.Method.CREATE)) {
-      MethodSpec delete = MethodSpec.methodBuilder(MvcController.Method.DELETE.serviceName)
-              .addParameter(ParameterSpec.builder(String.class, "id").build())
-              .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-              .build();
-      ret.add(delete);
-    }
     return ret;
   }
-
-
 }

@@ -17,8 +17,13 @@ public class MethodWrapperFactory {
   public static MethodWrapper create(MvcController mvcController, TypeElement typeElement) {
     if (mvcController.method().equals(MvcController.Method.FIND_BY_ID)) {
       return new ControllerFindByIdMethodWrapper(typeElement);
-    } else {
-      return new ControllerMethodWrapper(typeElement);
+    } else if (mvcController.method().equals(MvcController.Method.PAGE)) {
+      return new ControllerPageMethodWrapper(typeElement);
+    } else if (mvcController.method().equals(MvcController.Method.UPDATE)) {
+      return new ControllerUpdateMethodWrapper(typeElement);
+    } else if (mvcController.method().equals(MvcController.Method.CREATE)) {
+      return new ControllerCreateMethodWrapper(typeElement);
     }
+    throw new RuntimeException(String.format("不支持的方法类型:%s", mvcController.method().toString()));
   }
 }
